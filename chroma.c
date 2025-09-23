@@ -192,8 +192,6 @@ void gerarImagem(char caminho[TAM_MAX], Imagem **imagem) {
         }
     }
 
-    printf("%d", distancia);
-
     FILE *arquivo = fopen(caminho, "w");
 
     fprintf(arquivo, "P3\n");
