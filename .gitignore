@@ -55,3 +55,8 @@ dkms.conf
 **/input
 **/output
 **/assets
+
+# Linux
+*
+!*.*
+!*/

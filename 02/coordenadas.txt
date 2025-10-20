@@ -1,0 +1,68 @@
+Coxa:
+
+glVertex2f(x + 1.0, y + 3.0);
+glVertex2f(x + 2.0, y + 0.0);
+glVertex2f(x + 0.5, y + 8.0);
+glVertex2f(x + 0.0, y + 12.0);
+glVertex2f(x + 1.0, y + 18.0);
+glVertex2f(x + 2.0, y + 20.0);
+glVertex2f(x + 8.0, y + 20.0);
+glVertex2f(x + 10.0, y + 16.0);
+glVertex2f(x + 10.0, y + 12.0);
+glVertex2f(x + 10.0, y + 8.0);
+glVertex2f(x + 9.0, y + 4.0);
+glVertex2f(x + 7.0, y + 0.5);
+
+Joelho:
+
+glVertex2f(x + 0.0, y + 4.0);
+glVertex2f(x + 0.0, y + 6.0);
+glVertex2f(x + 4.0, y + 7.0);
+glVertex2f(x + 7.2, y + 10.0);
+glVertex2f(x + 8.0, y + 9.5);
+glVertex2f(x + 8.5, y + 8.8);
+glVertex2f(x + 9.0, y + 8.0);
+glVertex2f(x + 9.5, y + 7.0);
+glVertex2f(x + 10.0, y + 6.0);
+glVertex2f(x + 10.0, y + 4.0);
+glVertex2f(x + 9.5, y + 3.0);
+glVertex2f(x + 9.0, y + 2.0);
+glVertex2f(x + 8.5, y + 1.2);
+glVertex2f(x + 8.0, y + 0.5);
+glVertex2f(x + 7.2, y + 0.0);
+glVertex2f(x + 4.0, y + 3.0);
+
+Canela:
+
+glVertex2f(x + 1.5, y + 0.0);
+glVertex2f(x + 0.5, y + 2.0);
+glVertex2f(x + 0.0, y + 6.0);
+glVertex2f(x + 0.3, y + 12.0);
+glVertex2f(x + 0.0, y + 18.0);
+glVertex2f(x + 0.5, y + 20.0);
+glVertex2f(x + 6.0, y + 20.0);
+glVertex2f(x + 6.5, y + 17.0);
+glVertex2f(x + 6.5, y + 12.0);
+glVertex2f(x + 6.3, y + 8.0);
+glVertex2f(x + 6.0, y + 4.0);
+glVertex2f(x + 5.5, y + 0.0);
+
+Pé:
+
+glVertex2f(x + 0.2, y + 0.2);
+glVertex2f(x + 0.2, y + 4.0);
+glVertex2f(x + 0.5, y + 8.0);
+glVertex2f(x + 0.5, y + 12.0);
+glVertex2f(x + 0.0, y + 12.5);
+glVertex2f(x + 0.0, y + 14.0);
+glVertex2f(x + 7.0, y + 14.0);
+glVertex2f(x + 7.0, y + 12.5);
+glVertex2f(x + 6.5, y + 12.0);
+glVertex2f(x + 6.5, y + 8.0);
+glVertex2f(x + 6.7, y + 4.0);
+glVertex2f(x + 8.5, y + 4.0);
+glVertex2f(x + 11.0, y + 3.5);
+glVertex2f(x + 12.5, y + 2.0);
+glVertex2f(x + 12.2, y + 0.2);
+glVertex2f(x + 8.5, y + 0.0);
+glVertex2f(x + 4.5, y + 0.0);
