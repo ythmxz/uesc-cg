@@ -6,7 +6,8 @@ void drawThigh(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawKnee(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawCalf(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawFoot(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
-void drawLeg(GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r2, GLubyte g2, GLubyte b2, GLubyte colorOffset);
+void drawLeg(
+    GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r2, GLubyte g2, GLubyte b2, GLubyte colorOffset);
 
 // Parte superior
 void drawTorso(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
@@ -14,18 +15,18 @@ void drawStrap(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawBelt(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawChest(GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r2, GLubyte g2, GLubyte b2);
 
-void drawShoulder(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawUpperArm(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawForearm(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawHand(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
-void drawArm(GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r2, GLubyte g2, GLubyte b2, GLubyte colorOffset);
+void drawArm(
+    GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r2, GLubyte g2, GLubyte b2, GLubyte colorOffset);
 
 void drawEye(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawFace(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawHood(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawHead(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 
-void drawCape();
+void drawCape(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 
 void drawThigh(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
     glColor3ub(r, g, b);
@@ -120,7 +121,8 @@ void drawFoot(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
     glEnd();
 }
 
-void drawLeg(GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r2, GLubyte g2, GLubyte b2, GLubyte colorOffset) {
+void drawLeg(
+    GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r2, GLubyte g2, GLubyte b2, GLubyte colorOffset) {
     GLfloat angle = 0.0;
 
     glPushMatrix();
@@ -149,13 +151,33 @@ void drawLeg(GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r
 
 void drawTorso(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
     glColor3ub(r, g, b);
-
-    glBegin(GL_QUADS);
+    /*
+        glBegin(GL_QUADS);
+        {
+            glVertex2f(x + 0.0, y + 0.0);
+            glVertex2f(x + 0.0, y + 30.0);
+            glVertex2f(x + 15.0, y + 30.0);
+            glVertex2f(x + 15.0, y + 0.0);
+        }
+    */
+    glBegin(GL_POLYGON);
     {
-        glVertex2f(x + 0.0, y + 0.0);
-        glVertex2f(x + 0.0, y + 30.0);
-        glVertex2f(x + 15.0, y + 30.0);
-        glVertex2f(x + 15.0, y + 0.0);
+        glVertex2f(x + 5.0, y + 0.0);
+        glVertex2f(x + 3.0, y + 4.0);
+        glVertex2f(x + 2.0, y + 10.0);
+        glVertex2f(x + 0.0, y + 15.0);
+        glVertex2f(x + 0.0, y + 20.0);
+        glVertex2f(x + 2.0, y + 26.0);
+        glVertex2f(x + 5.0, y + 30.0);
+        glVertex2f(x + 10.0, y + 30.0);
+        glVertex2f(x + 13.0, y + 26.0);
+        glVertex2f(x + 15.0, y + 20.0);
+        glVertex2f(x + 14.0, y + 16.0);
+        glVertex2f(x + 12.0, y + 16.0);
+        glVertex2f(x + 11.0, y + 12.0);
+        glVertex2f(x + 10.5, y + 6.0);
+        glVertex2f(x + 10.0, y + 2.0);
+        glVertex2f(x + 8.0, y + 0.0);
     }
     glEnd();
 }
@@ -165,10 +187,10 @@ void drawStrap(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
 
     glBegin(GL_POLYGON);
     {
-        glVertex2f(x + 0.0, y + 0.0);
-        glVertex2f(x + 0.0, y + 3.0);
-        glVertex2f(x + 15.0, y + 20.0);
-        glVertex2f(x + 15.0, y + 17.0);
+        glVertex2f(x + 2.0, y + 0.0);
+        glVertex2f(x + 2.0, y + 3.0);
+        glVertex2f(x + 12.5, y + 19.0);
+        glVertex2f(x + 14.0, y + 16.0);
     }
     glEnd();
 }
@@ -178,10 +200,10 @@ void drawBelt(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
 
     glBegin(GL_QUADS);
     {
-        glVertex2f(x + 0.0, y + 0.0);
-        glVertex2f(x + 0.0, y + 3.0);
-        glVertex2f(x + 15.0, y + 3.0);
-        glVertex2f(x + 15.0, y + 0.0);
+        glVertex2f(x + 5.0, y + 0.0);
+        glVertex2f(x + 5.0, y + 3.0);
+        glVertex2f(x + 11.0, y + 3.0);
+        glVertex2f(x + 10.5, y + 0.0);
     }
     glEnd();
 }
@@ -199,28 +221,24 @@ void drawChest(GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte
     glPopMatrix();
 }
 
-void drawShoulder(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
-    glColor3ub(r, g, b);
-
-    glBegin(GL_QUADS);
-    {
-        glVertex2f(x + 0.0, y + 0.0);
-        glVertex2f(x + 0.0, y + 8.0);
-        glVertex2f(x + 8.0, y + 8.0);
-        glVertex2f(x + 8.0, y + 0.0);
-    }
-    glEnd();
-}
-
 void drawUpperArm(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
     glColor3ub(r, g, b);
 
-    glBegin(GL_QUADS);
+    glBegin(GL_POLYGON);
     {
-        glVertex2f(x + 0.0, y + 0.0);
-        glVertex2f(x + 0.0, y + 15.0);
-        glVertex2f(x + 7.0, y + 15.0);
-        glVertex2f(x + 7.0, y + 0.0);
+        glVertex2f(x + 1.5, y + 0.0);
+        glVertex2f(x + 0.5, y + 4.0);
+        glVertex2f(x + 0.0, y + 8.0);
+        glVertex2f(x + 0.0, y + 10.0);
+        glVertex2f(x + 0.5, y + 12.0);
+        glVertex2f(x + 1.5, y + 14.0);
+        glVertex2f(x + 3.5, y + 14.0);
+        glVertex2f(x + 5.0, y + 13.0);
+        glVertex2f(x + 6.5, y + 11.0);
+        glVertex2f(x + 7.0, y + 8.0);
+        glVertex2f(x + 6.5, y + 6.0);
+        glVertex2f(x + 6.0, y + 4.0);
+        glVertex2f(x + 4.5, y + 0.0);
     }
     glEnd();
 }
@@ -228,12 +246,20 @@ void drawUpperArm(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
 void drawForearm(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
     glColor3ub(r, g, b);
 
-    glBegin(GL_QUADS);
+    glBegin(GL_POLYGON);
     {
         glVertex2f(x + 1.0, y + 0.0);
-        glVertex2f(x + 0.0, y + 15.0);
-        glVertex2f(x + 7.0, y + 15.0);
-        glVertex2f(x + 6.0, y + 0.0);
+        glVertex2f(x + 0.5, y + 4.0);
+        glVertex2f(x + 0.0, y + 8.0);
+        glVertex2f(x + 0.0, y + 10.0);
+        glVertex2f(x + 0.4, y + 12.0);
+        glVertex2f(x + 1.0, y + 14.0);
+        glVertex2f(x + 4.0, y + 14.0);
+        glVertex2f(x + 5.0, y + 10.0);
+        glVertex2f(x + 5.0, y + 8.0);
+        glVertex2f(x + 4.5, y + 4.0);
+        glVertex2f(x + 4.0, y + 0.0);
+        glVertex2f(x + 4.5, y + 12.0);
     }
     glEnd();
 }
@@ -241,17 +267,19 @@ void drawForearm(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
 void drawHand(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
     glColor3ub(r, g, b);
 
-    glBegin(GL_QUADS);
+    glBegin(GL_POLYGON);
     {
-        glVertex2f(x + 0.0, y + 0.0);
-        glVertex2f(x + 0.0, y + 6.0);
-        glVertex2f(x + 6.0, y + 6.0);
-        glVertex2f(x + 6.0, y + 0.0);
+        glVertex2f(x + 0.0, y + 1.0);
+        glVertex2f(x + 1.5, y + 6.0);
+        glVertex2f(x + 4.5, y + 6.0);
+        glVertex2f(x + 6.0, y + 3.0);
+        glVertex2f(x + 5.0, y + 0.0);
     }
     glEnd();
 }
 
-void drawArm(GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r2, GLubyte g2, GLubyte b2, GLubyte colorOffset) {
+void drawArm(
+    GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r2, GLubyte g2, GLubyte b2, GLubyte colorOffset) {
     GLfloat angle = 0.0;
 
     glPushMatrix();
@@ -259,9 +287,16 @@ void drawArm(GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r
         glTranslatef(x, y, 0.0);
 
         drawUpperArm(-0.5, 21.0, r1 + colorOffset, g1 + colorOffset, b1 + colorOffset);
-        drawForearm(-0.5, 6.0, r1 + colorOffset, g1 + colorOffset, b1 + colorOffset);
-        drawShoulder(-1.0, 31.0, r2 + colorOffset, g2 + colorOffset, b2 + colorOffset);
-        drawHand(0.0, 0.0, r2 + colorOffset, g2 + colorOffset, b2 + colorOffset);
+
+        angle = 15.0;
+        glRotatef(angle, 0.0, 0.0, 1.0);
+        drawForearm(5.5, 7.0, r1 + colorOffset, g1 + colorOffset, b1 + colorOffset);
+        glRotatef(-angle, 0.0, 0.0, 1.0);
+
+        angle = 15.0;
+        glRotatef(angle, 0.0, 0.0, 1.0);
+        drawHand(5.0, 2.0, r2 + colorOffset, g2 + colorOffset, b2 + colorOffset);
+        glRotatef(-angle, 0.0, 0.0, 1.0);
     }
     glPopMatrix();
 }
@@ -364,20 +399,43 @@ void drawHead(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
         drawEye(18.0, 5.0, 255, 255, 255);
         glRotatef(-angle, 0.0, 0.0, 1.0);
 
-        drawHood(0.0, 0.0, r, g, b);
+        drawHood(-1.0, 0.0, r, g, b);
     }
     glPopMatrix();
 }
 
+void drawCape(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
+    glColor3ub(r, g, b);
+
+    glBegin(GL_POLYGON);
+    {
+        glVertex2f(x + 40.0, y + 0.0);
+        glVertex2f(x + 30.9, y + 2.3);
+        glVertex2f(x + 21.8, y + 5.2);
+        glVertex2f(x + 14.9, y + 5.6);
+        glVertex2f(x + 7.7, y + 10.8);
+        glVertex2f(x + 16.4, y + 18.6);
+        glVertex2f(x + 20.1, y + 27.5);
+        glVertex2f(x + 20.0, y + 40.0);
+        glVertex2f(x + 24.0, y + 47.8);
+        glVertex2f(x + 30.0, y + 58.5);
+        glVertex2f(x + 37.3, y + 57.5);
+        glVertex2f(x + 36.4, y + 46.7);
+        glVertex2f(x + 38.1, y + 30.8);
+        glVertex2f(x + 39.5, y + 15.3);
+    }
+    glEnd();
+}
+
 void display() {
     glClear(GL_COLOR_BUFFER_BIT);
-    drawArm(71.0, 48.0, 60, 40, 80, 60, 60, 60, -20);
-    drawLeg(70.0, 20.0, 60, 40, 80, 60, 60, 60, -15);
+    drawCape(30.0, 20.0, 50, 30, 70);
+    drawArm(68.0, 48.0, 60, 40, 80, 60, 60, 60, -20);
+    drawLeg(66.5, 20.0, 60, 40, 80, 60, 60, 60, -15);
     drawChest(58.0, 54.0, 60, 40, 80, 60, 60, 60);
-    drawLeg(60.0, 20.0, 60, 40, 80, 60, 60, 60, 15);
-    drawHead(54.0, 82.5, 60, 40, 80);
-    drawArm(56.0, 48.0, 60, 40, 80, 60, 60, 60, 20);
-
+    drawLeg(62.0, 20.0, 60, 40, 80, 60, 60, 60, 15);
+    drawHead(56.0, 81.5, 60, 40, 80);
+    drawArm(58.0, 48.0, 60, 40, 80, 60, 60, 60, 20);
     glFlush();
 }
 
@@ -389,8 +447,8 @@ int main(int argc, char **argv) {
     int displayHeight = glutGet(GLUT_SCREEN_HEIGHT);
 
     // Tamanho da janela
-    int windowWidth = displayHeight / 2;
-    int windowHeight = displayHeight / 2;
+    int windowWidth = displayHeight;
+    int windowHeight = displayHeight;
 
     // Cria a janela
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
@@ -400,7 +458,7 @@ int main(int argc, char **argv) {
 
     // Define fundo e espaço de desenho
     glClearColor(1.0, 1.0, 1.0, 1.0);
-    gluOrtho2D(0.00, (double)windowWidth / 4.0, 0.00, (double)windowHeight / 4.0);
+    gluOrtho2D(0.00, (double)windowWidth / 14.0, 0.00, (double)windowHeight / 14.0);
 
     // Exibe conteúdo
     glutDisplayFunc(display);
