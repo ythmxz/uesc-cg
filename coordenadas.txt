@@ -1,0 +1,27 @@
+Bota:
+
+A: glVertex2f(x + 5.00, y + 0.00);
+B: glVertex2f(x + 5.00, y + 60.00);
+C: glVertex2f(x + 0.00, y + 70.00);
+D: glVertex2f(x + 0.00, y + 80.00);
+E: glVertex2f(x + 40.00, y + 80.00);
+F: glVertex2f(x + 40.00, y + 70.00);
+G: glVertex2f(x + 35.00, y + 60.00);
+H: glVertex2f(x + 35.00, y + 25.00);
+I: glVertex2f(x + 60.00, y + 25.00);
+J: glVertex2f(x + 70.00, y + 20.00);
+K: glVertex2f(x + 80.00, y + 10.00);
+L: glVertex2f(x + 80.00, y + 0.00);
+
+Panturrilha:
+
+A: glVertex2f(5.00, 0.00);
+B: glVertex2f(0.00, 35.00);
+C: glVertex2f(0.00, 55.00);
+D: glVertex2f(2.00, 70.00);
+E: glVertex2f(5.00, 80.00);
+F: glVertex2f(35.00, 80.00);
+G: glVertex2f(38.00, 70.00);
+H: glVertex2f(40.00, 55.00);
+I: glVertex2f(40.00, 35.00);
+J: glVertex2f(35.00, 0.00);

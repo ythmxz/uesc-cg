@@ -1,13 +1,17 @@
 #include <GL/glut.h>
-#include <stdio.h>
+
+int displayWidth = 0, displayHeight = 0;
+int windowWidth = 0, windowHeight = 0;
+
+void display();
+void reshape(GLsizei width, GLsizei height);
 
 // Parte inferior
 void drawThigh(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawKnee(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawCalf(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawFoot(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
-void drawLeg(
-    GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r2, GLubyte g2, GLubyte b2, GLubyte colorOffset);
+void drawLeg(GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r2, GLubyte g2, GLubyte b2, GLubyte colorOffset);
 
 // Parte superior
 void drawTorso(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
@@ -18,8 +22,7 @@ void drawChest(GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte
 void drawUpperArm(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawForearm(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawHand(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
-void drawArm(
-    GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r2, GLubyte g2, GLubyte b2, GLubyte colorOffset);
+void drawArm(GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r2, GLubyte g2, GLubyte b2, GLubyte colorOffset);
 
 void drawEye(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawFace(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
@@ -27,6 +30,75 @@ void drawHood(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 void drawHead(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 
 void drawCape(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
+
+int main(int argc, char **argv) {
+    glutInit(&argc, argv);
+
+    // Tamanho do monitor
+    displayWidth = glutGet(GLUT_SCREEN_WIDTH);
+    displayHeight = glutGet(GLUT_SCREEN_HEIGHT);
+
+    // Tamanho da janela
+    windowWidth = displayHeight / 2;
+    windowHeight = displayHeight / 2;
+
+    // Cria a janela
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(windowWidth, windowHeight);
+    glutInitWindowPosition((displayWidth - windowWidth) / 2, (displayHeight - windowHeight) / 2);
+    glutCreateWindow("Spoiler");
+
+    // Define fundo e espaço de desenho
+    glClearColor(1.0, 1.0, 1.0, 1.0);
+
+    // Exibe conteúdo
+    glutDisplayFunc(display);
+    glutReshapeFunc(reshape);
+    glutMainLoop();
+
+    return 0;
+}
+
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    drawCape(30.0, 20.0, 50, 30, 70);
+    drawArm(68.0, 48.0, 60, 40, 80, 60, 60, 60, -20);
+    drawLeg(66.5, 20.0, 60, 40, 80, 60, 60, 60, -15);
+    drawChest(58.0, 54.0, 60, 40, 80, 60, 60, 60);
+    drawLeg(62.0, 20.0, 60, 40, 80, 60, 60, 60, 15);
+    drawHead(56.0, 81.5, 60, 40, 80);
+    drawArm(58.0, 48.0, 60, 40, 80, 60, 60, 60, 20);
+    glFlush();
+}
+
+void reshape(GLsizei width, GLsizei height) {
+    if (height == 0) {
+        height = 1;
+    }
+
+    double desiredAspect = (double)windowWidth / (double)windowHeight;
+    double windowAspect = (double)width / (double)height;
+
+    int viewWidth = 0, viewHeight = 0;
+
+    if (windowAspect >= desiredAspect) {
+        viewWidth = (int)(height * desiredAspect + 0.5);
+        viewHeight = height;
+    } else {
+        viewWidth = width;
+        viewHeight = (int)(width / desiredAspect + 0.5);
+    }
+
+    int viewX = (width - viewWidth) / 2;
+    int viewY = (height - viewHeight) / 2;
+    glViewport(viewX, viewY, viewWidth, viewHeight);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0.0, (double)windowWidth / 4.00, 0.00, (double)windowHeight / 4.00);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
 
 void drawThigh(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
     glColor3ub(r, g, b);
@@ -121,8 +193,7 @@ void drawFoot(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
     glEnd();
 }
 
-void drawLeg(
-    GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r2, GLubyte g2, GLubyte b2, GLubyte colorOffset) {
+void drawLeg(GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r2, GLubyte g2, GLubyte b2, GLubyte colorOffset) {
     GLfloat angle = 0.0;
 
     glPushMatrix();
@@ -278,8 +349,7 @@ void drawHand(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
     glEnd();
 }
 
-void drawArm(
-    GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r2, GLubyte g2, GLubyte b2, GLubyte colorOffset) {
+void drawArm(GLfloat x, GLfloat y, GLubyte r1, GLubyte g1, GLubyte b1, GLubyte r2, GLubyte g2, GLubyte b2, GLubyte colorOffset) {
     GLfloat angle = 0.0;
 
     glPushMatrix();
@@ -425,44 +495,4 @@ void drawCape(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
         glVertex2f(x + 39.5, y + 15.3);
     }
     glEnd();
-}
-
-void display() {
-    glClear(GL_COLOR_BUFFER_BIT);
-    drawCape(30.0, 20.0, 50, 30, 70);
-    drawArm(68.0, 48.0, 60, 40, 80, 60, 60, 60, -20);
-    drawLeg(66.5, 20.0, 60, 40, 80, 60, 60, 60, -15);
-    drawChest(58.0, 54.0, 60, 40, 80, 60, 60, 60);
-    drawLeg(62.0, 20.0, 60, 40, 80, 60, 60, 60, 15);
-    drawHead(56.0, 81.5, 60, 40, 80);
-    drawArm(58.0, 48.0, 60, 40, 80, 60, 60, 60, 20);
-    glFlush();
-}
-
-int main(int argc, char **argv) {
-    glutInit(&argc, argv);
-
-    // Tamanho do monitor
-    int displayWidth = glutGet(GLUT_SCREEN_WIDTH);
-    int displayHeight = glutGet(GLUT_SCREEN_HEIGHT);
-
-    // Tamanho da janela
-    int windowWidth = displayHeight;
-    int windowHeight = displayHeight;
-
-    // Cria a janela
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowSize(windowWidth, windowHeight);
-    glutInitWindowPosition((displayWidth - windowWidth) / 2, (displayHeight - windowHeight) / 2);
-    glutCreateWindow("Spoiler");
-
-    // Define fundo e espaço de desenho
-    glClearColor(1.0, 1.0, 1.0, 1.0);
-    gluOrtho2D(0.00, (double)windowWidth / 14.0, 0.00, (double)windowHeight / 14.0);
-
-    // Exibe conteúdo
-    glutDisplayFunc(display);
-    glutMainLoop();
-
-    return 0;
 }

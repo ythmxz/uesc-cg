@@ -35,14 +35,14 @@ def xml_to_txt(xml_path: str, txt_path: str) -> None:
         for label, x, y in coords_list:
             if label:
                 file.write(f"{label}: ")
-            file.write(f"glVertex2f(x + {(10.0 * x):.1f}, y + {(10.0 * y):.1f});\n")
+            file.write(f"glVertex2f({x:.2f}, {y:.2f});\n")
 
     print(f"{len(coords_list)} coordenadas salvas em: {txt_path}")
 
 
 def main() -> None:
-    # xml_to_txt("C:\\Users\\Yuri\\Downloads\\geogebra.xml", "02\\coordenadas.txt")
-    xml_to_txt("/home/yuri/Downloads/geogebra.xml", "02/coordenadas.txt")
+    xml_to_txt("C:\\Users\\Yuri\\Downloads\\geogebra.xml", "coordenadas.txt")
+    # xml_to_txt("/home/yuri/Downloads/geogebra.xml", "coordenadas.txt")
 
 
 if __name__ == "__main__":
