@@ -6,13 +6,21 @@
 int displayWidth = 0, displayHeight = 0;
 int windowWidth = 0, windowHeight = 0;
 
-void display();
+GLfloat neck = 0.0;
+GLfloat shoulderL = 0.0, elbowL = 0.0, wristL = 0.0;
+GLfloat shoulderR = 0.0, elbowR = 0.0, wristR = 0.0;
+GLfloat hipL = 0.0, kneeL = 0.0, ankleL = 0.0;
+GLfloat hipR = 0.0, kneeR = 0.0, ankleR = 0.0;
+
+void display(void);
 void reshape(GLsizei width, GLsizei height);
+void keyboard(unsigned char key, GLint x, GLint y);
+
+void drawJoint(GLfloat x, GLfloat y, GLfloat radius, GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset);
 
 // Perna
 void drawFoot(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset);
 void drawCalf(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset);
-void drawKnee(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset);
 void drawThigh(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset);
 void drawLeg(GLfloat x,
              GLfloat y,
@@ -42,7 +50,7 @@ void drawHood(GLubyte r, GLubyte g, GLubyte b);
 void drawFace(GLubyte r, GLubyte g, GLubyte b);
 void drawEye(GLubyte r, GLubyte g, GLubyte b);
 
-// Extra
+// Acessório
 void drawCape(GLubyte r, GLubyte g, GLubyte b);
 
 int main(int argc, char **argv) {
@@ -68,6 +76,7 @@ int main(int argc, char **argv) {
     // Callbacks
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
+    glutKeyboardFunc(keyboard);
     glutMainLoop();
 
     return 0;
@@ -75,7 +84,8 @@ int main(int argc, char **argv) {
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT);
-    drawLeg(50.0, 200.0, 30.0, -50.0, 0.0, 60, 40, 80, 60, 60, 60, 0);
+    drawLeg(100.0, 200.0, hipL, kneeL, ankleL, 60, 40, 80, 60, 60, 60, -10);
+    drawLeg(50.0, 200.0, hipR, kneeR, ankleR, 60, 40, 80, 60, 60, 60, 10);
     glFlush();
 }
 
@@ -109,6 +119,76 @@ void reshape(GLsizei width, GLsizei height) {
     gluOrtho2D(0.0, (double)windowWidth, 0.0, (double)windowHeight);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+}
+
+void keyboard(unsigned char key, GLint x, GLint y) {
+    switch (key) {
+    // Perna direita
+    case 'w':
+        hipR = (hipR <= 45.0) ? hipR += 5.0 : hipR;
+        break;
+
+    case 'q':
+        hipR = (hipR >= -45.0) ? hipR -= 5.0 : hipR;
+        break;
+
+    case 's':
+        kneeR = (kneeR <= -5.0) ? kneeR += 5.0 : kneeR;
+        break;
+
+    case 'a':
+        kneeR = (kneeR >= -130.0) ? kneeR -= 5.0 : kneeR;
+        break;
+
+    case 'x':
+        ankleR = (ankleR <= 5.0) ? ankleR += 5.0 : ankleR;
+        break;
+
+    case 'z':
+        ankleR = (ankleR >= -5.0) ? ankleR -= 5.0 : ankleR;
+        break;
+
+    // Perna esquerda
+    case 'r':
+        hipL = (hipL <= 45.0) ? hipL += 5.0 : hipL;
+        break;
+
+    case 'e':
+        hipL = (hipL >= -45.0) ? hipL -= 5.0 : hipL;
+        break;
+
+    case 'f':
+        kneeL = (kneeL <= -5.0) ? kneeL += 5.0 : kneeL;
+        break;
+
+    case 'd':
+        kneeL = (kneeL >= -130.0) ? kneeL -= 5.0 : kneeL;
+        break;
+
+    case 'v':
+        ankleL = (ankleL <= 5.0) ? ankleL += 5.0 : ankleL;
+        break;
+
+    case 'c':
+        ankleL = (ankleL >= -5.0) ? ankleL -= 5.0 : ankleL;
+        break;
+    }
+
+    glutPostRedisplay();
+}
+
+void drawJoint(GLfloat x, GLfloat y, GLfloat radius, GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset) {
+    glColor3ub(r + colorOffset, g + colorOffset, b + colorOffset);
+
+    glBegin(GL_TRIANGLE_FAN);
+    {
+        glVertex2f(x, y);
+        for (int i = 0; i <= 100; i++) {
+            GLfloat angle = 2 * M_PI * i / 100;
+            glVertex2f(x + (radius * cos(angle)), y + (radius * sin(angle)));
+        }
+    }
+    glEnd();
 }
 
 void drawFoot(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset) {
@@ -158,20 +238,6 @@ void drawCalf(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset) {
     glEnd();
 }
 
-void drawKnee(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset) {
-    glColor3ub(r + colorOffset, g + colorOffset, b + colorOffset);
-
-    glBegin(GL_TRIANGLE_FAN);
-    {
-        glVertex2f(20.0, 20.0); // Center of the circle
-        for (int i = 0; i <= 100; i++) {
-            GLfloat angle = 2 * M_PI * i / 100;
-            glVertex2f(20.0 + (15.0 * cos(angle)), 20.0 + (15.0 * sin(angle)));
-        }
-    }
-    glEnd();
-}
-
 void drawThigh(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset) {
     glColor3ub(r + colorOffset, g + colorOffset, b + colorOffset);
 
@@ -207,46 +273,63 @@ void drawLeg(GLfloat x,
 
     glPushMatrix();
     {
-        pivotX = 20.0, pivotY = 80.0;
-
-        glTranslatef(x + pivotX, y + pivotY, 0.0);
-        glRotatef(angleA, 0.0, 0.0, 1.0);
-        glTranslatef(-pivotX, -pivotY, 0.0);
-
-        drawThigh(r1, g1, b1, colorOffset);
+        glTranslatef(x, y, 0.0);
 
         glPushMatrix();
         {
-            pivotX = 15.0, pivotY = 15.0;
+            pivotX = 20.0, pivotY = 80.0;
 
-            glTranslatef(pivotX, pivotY - 15.0, 0.0);
-            glRotatef(angleB, 0.0, 0.0, 1.0);
+            glTranslatef(pivotX, pivotY, 0.0);
+            glRotatef(angleA, 0.0, 0.0, 1.0);
             glTranslatef(-pivotX, -pivotY, 0.0);
 
-            drawKnee(r1, g1, b1, colorOffset);
+            drawJoint(20.0, 80.0, 18.0, r1, g1, b1, colorOffset);
+            drawThigh(r1, g1, b1, colorOffset);
 
+            // Joelho
             glPushMatrix();
             {
-                pivotX = 20.0, pivotY = 80.0;
+                pivotX = 20.0, pivotY = 0.0;
 
-                glTranslatef(0.0, -65.0, 0.0);
+                glTranslatef(pivotX, pivotY, 0.0);
+                glRotatef(angleB, 0.0, 0.0, 1.0);
+                glTranslatef(-pivotX, -pivotY, 0.0);
 
-                drawCalf(r1, g1, b1, colorOffset);
+                drawJoint(20.0, 0.0, 15.0, r1, g1, b1, colorOffset);
 
+                // Panturrilha
                 glPushMatrix();
                 {
-                    pivotX = 20.0, pivotY = 80.0;
+                    glTranslatef(0.0, -80.0, 0.0);
 
-                    glTranslatef(pivotX, pivotY - 80.0, 0.0);
-                    glRotatef(angleC, 0.0, 0.0, 1.0);
-                    glTranslatef(-pivotX, -pivotY, 0.0);
+                    drawCalf(r1, g1, b1, colorOffset);
 
-                    drawFoot(r2, g2, b2, colorOffset);
+                    // Tornozelo
+                    glPushMatrix();
+                    {
+                        pivotX = 20.0, pivotY = 0.0;
+
+                        glTranslatef(pivotX, pivotY, 0.0);
+                        glRotatef(angleC, 0.0, 0.0, 1.0);
+                        glTranslatef(-pivotX, -pivotY, 0.0);
+
+                        drawJoint(20.0, 0.0, 15.0, r1, g1, b1, colorOffset);
+
+                        // Pé
+                        glPushMatrix();
+                        {
+                            glTranslatef(0.0, -80.0, 0.0);
+                            drawFoot(r2, g2, b2, colorOffset);
+                        }
+                        glPopMatrix();
+                    }
+                    glPopMatrix();
                 }
                 glPopMatrix();
             }
             glPopMatrix();
         }
+        glPopMatrix();
     }
     glPopMatrix();
 }
