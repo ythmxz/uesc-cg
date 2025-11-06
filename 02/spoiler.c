@@ -26,9 +26,9 @@ void drawJoint(GLfloat x, GLfloat y, GLfloat radius, GLubyte r, GLubyte g, GLuby
 
 // Perna
 
-void drawFoot(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset);
-void drawCalf(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset);
 void drawThigh(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset);
+void drawCalf(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset);
+void drawFoot(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset);
 void drawLeg(GLfloat x,
              GLfloat y,
              GLfloat angleA,
@@ -51,20 +51,20 @@ void drawChest(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 
 // Braço
 
-void drawHand(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset);
-void drawForearm(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset);
 void drawUpperArm(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset);
+void drawForearm(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset);
+void drawHand(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset);
 void drawArm(GLfloat x,
              GLfloat y,
              GLfloat angleA,
              GLfloat angleB,
-             GLfloat angleC,
+             /*GLfloat angleC,*/
              GLubyte r1,
              GLubyte g1,
              GLubyte b1,
-             GLubyte r2,
+             /*GLubyte r2,
              GLubyte g2,
-             GLubyte b2,
+             GLubyte b2,*/
              GLubyte colorOffset);
 
 // Cabeça
@@ -109,6 +109,7 @@ void display() {
     drawLeg(98.0, 200.0, hipL, kneeL, ankleL, 60, 40, 80, 60, 60, 60, -10);
     drawChest(60.0, 260.0, 60, 40, 80);
     drawLeg(52.0, 200.0, hipR, kneeR, ankleR, 60, 40, 80, 60, 60, 60, 10);
+    drawArm(60.0, 320.0, shoulderR, elbowR, 0, 40, 80, 0);
     glutSwapBuffers();
 }
 
@@ -149,11 +150,11 @@ void keyboard(unsigned char key, GLint x, GLint y) {
     switch (key) {
     // Perna Direita
     case 'w':
-        hipR = (hipR <= 45.0) ? hipR += 5.0 : hipR;
+        hipR = (hipR <= 75.0) ? hipR += 5.0 : hipR;
         break;
 
     case 'q':
-        hipR = (hipR >= -45.0) ? hipR -= 5.0 : hipR;
+        hipR = (hipR >= -75.0) ? hipR -= 5.0 : hipR;
         break;
 
     case 's':
@@ -174,11 +175,11 @@ void keyboard(unsigned char key, GLint x, GLint y) {
 
     // Perna Esquerda
     case 'r':
-        hipL = (hipL <= 45.0) ? hipL += 5.0 : hipL;
+        hipL = (hipL <= 75.0) ? hipL += 5.0 : hipL;
         break;
 
     case 'e':
-        hipL = (hipL >= -45.0) ? hipL -= 5.0 : hipL;
+        hipL = (hipL >= -75.0) ? hipL -= 5.0 : hipL;
         break;
 
     case 'f':
@@ -196,6 +197,23 @@ void keyboard(unsigned char key, GLint x, GLint y) {
     case 'c':
         ankleL = (ankleL >= -5.0) ? ankleL -= 5.0 : ankleL;
         break;
+
+    // Braço Direito
+    case 'y':
+        shoulderR = (shoulderR <= 175.0) ? shoulderR += 5.0 : shoulderR;
+        break;
+
+    case 't':
+        shoulderR = (shoulderR >= -55.0) ? shoulderR -= 5.0 : shoulderR;
+        break;
+
+    case 'h':
+        elbowR = (elbowR <= 145.0) ? elbowR += 5.0 : elbowR;
+        break;
+
+    case 'g':
+        elbowR = (elbowR >= 5.0) ? elbowR -= 5.0 : elbowR;
+        break;
     }
 
     glutPostRedisplay();
@@ -211,6 +229,44 @@ void drawJoint(GLfloat x, GLfloat y, GLfloat radius, GLubyte r, GLubyte g, GLuby
             GLfloat angle = 2 * M_PI * i / 16;
             glVertex2f(x + (radius * cos(angle)), y + (radius * sin(angle)));
         }
+    }
+    glEnd();
+}
+
+void drawThigh(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset) {
+    glColor3ub(r + colorOffset, g + colorOffset, b + colorOffset);
+
+    glBegin(GL_POLYGON);
+    {
+        glVertex2f(10.0, 0.0);
+        glVertex2f(3.0, 35.0);
+        glVertex2f(0.0, 55.0);
+        glVertex2f(0.0, 70.0);
+        glVertex2f(0.0, 80.0);
+        glVertex2f(50.0, 80.0);
+        glVertex2f(50.0, 70.0);
+        glVertex2f(50.0, 55.0);
+        glVertex2f(47.0, 35.0);
+        glVertex2f(40.0, 0.0);
+    }
+    glEnd();
+}
+
+void drawCalf(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset) {
+    glColor3ub(r + colorOffset, g + colorOffset, b + colorOffset);
+
+    glBegin(GL_POLYGON);
+    {
+        glVertex2f(5.0, 0.0);
+        glVertex2f(0.0, 35.0);
+        glVertex2f(0.0, 55.0);
+        glVertex2f(2.0, 70.0);
+        glVertex2f(5.0, 80.0);
+        glVertex2f(35.0, 80.0);
+        glVertex2f(38.0, 70.0);
+        glVertex2f(40.0, 55.0);
+        glVertex2f(40.0, 35.0);
+        glVertex2f(35.0, 0.0);
     }
     glEnd();
 }
@@ -239,44 +295,6 @@ void drawFoot(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset) {
         glVertex2f(60.0, 20.0);
         glVertex2f(65.0, 10.0);
         glVertex2f(65.0, 0.0);
-    }
-    glEnd();
-}
-
-void drawCalf(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset) {
-    glColor3ub(r + colorOffset, g + colorOffset, b + colorOffset);
-
-    glBegin(GL_POLYGON);
-    {
-        glVertex2f(5.0, 0.0);
-        glVertex2f(0.0, 35.0);
-        glVertex2f(0.0, 55.0);
-        glVertex2f(2.0, 70.0);
-        glVertex2f(5.0, 80.0);
-        glVertex2f(35.0, 80.0);
-        glVertex2f(38.0, 70.0);
-        glVertex2f(40.0, 55.0);
-        glVertex2f(40.0, 35.0);
-        glVertex2f(35.0, 0.0);
-    }
-    glEnd();
-}
-
-void drawThigh(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset) {
-    glColor3ub(r + colorOffset, g + colorOffset, b + colorOffset);
-
-    glBegin(GL_POLYGON);
-    {
-        glVertex2f(10.0, 0.0);
-        glVertex2f(3.0, 35.0);
-        glVertex2f(0.0, 55.0);
-        glVertex2f(0.0, 70.0);
-        glVertex2f(0.0, 80.0);
-        glVertex2f(50.0, 80.0);
-        glVertex2f(50.0, 70.0);
-        glVertex2f(50.0, 55.0);
-        glVertex2f(47.0, 35.0);
-        glVertex2f(40.0, 0.0);
     }
     glEnd();
 }
@@ -392,6 +410,34 @@ void drawTorso(GLubyte r, GLubyte g, GLubyte b) {
         glVertex2f(76.0, 20.0);
     }
     glEnd();
+
+    glBegin(GL_POLYGON);
+    {
+        glVertex2f(4.0, 52.0);
+        glVertex2f(4.0, 80.0);
+        glVertex2f(2.0, 100.0);
+        glVertex2f(0.0, 120.0);
+        glVertex2f(0.0, 140.0);
+        glVertex2f(4.0, 150.0);
+        glVertex2f(10.0, 160.0);
+        glVertex2f(60.0, 160.0);
+        glVertex2f(70.0, 150.0);
+        glVertex2f(70.0, 78.0);
+        glVertex2f(72.0, 68.0);
+        glVertex2f(76.0, 52.0);
+    }
+    glEnd();
+
+    glBegin(GL_POLYGON);
+    {
+        glVertex2f(60.0, 160.0);
+        glVertex2f(70.0, 150.0);
+        glVertex2f(80.0, 140.0);
+        glVertex2f(86.0, 130.0);
+        glVertex2f(82.0, 120.0);
+        glVertex2f(70.0, 112.0);
+    }
+    glEnd();
 }
 
 void drawChest(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
@@ -407,5 +453,92 @@ void drawChest(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
         glPopMatrix();
     }
     // Fim Peitoral
+    glPopMatrix();
+}
+
+void drawUpperArm(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset) {
+    glColor3ub(r + colorOffset, g + colorOffset, b + colorOffset);
+
+    glBegin(GL_POLYGON);
+    {
+        glVertex2f(5.0, 0.0);
+        glVertex2f(0.0, 80.0);
+        glVertex2f(40.0, 80.0);
+        glVertex2f(35.0, 0.0);
+    }
+    glEnd();
+}
+
+void drawForearm(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset) {
+    glColor3ub(r + colorOffset, g + colorOffset, b + colorOffset);
+
+    glBegin(GL_POLYGON);
+    {
+        glVertex2f(5.0, 0.0);
+        glVertex2f(0.0, 80.0);
+        glVertex2f(30.0, 80.0);
+        glVertex2f(25.0, 0.0);
+    }
+    glEnd();
+}
+
+void drawArm(GLfloat x,
+             GLfloat y,
+             GLfloat angleA,
+             GLfloat angleB,
+             /*GLfloat angleC,*/
+             GLubyte r1,
+             GLubyte g1,
+             GLubyte b1,
+             /*GLubyte r2,
+             GLubyte g2,
+             GLubyte b2,*/
+             GLubyte colorOffset) {
+    GLfloat pivotX = 0.0, pivotY = 0.0;
+
+    // Braço
+    glPushMatrix();
+    {
+        glTranslatef(x, y, 0.0);
+
+        // Braço Superior
+        glPushMatrix();
+        {
+            pivotX = 20.0, pivotY = 80.0;
+
+            glTranslatef(pivotX, pivotY, 0.0);
+            glRotatef(angleA, 0.0, 0.0, 1.0);
+            glTranslatef(-pivotX, -pivotY, 0.0);
+
+            drawJoint(20.0, 80.0, 20.0, 255, 0, 0, colorOffset);
+            drawUpperArm(40, 40, 40, colorOffset);
+
+            // Cotovelo
+            glPushMatrix();
+            {
+                pivotX = 20.0, pivotY = 0.0;
+
+                glTranslatef(pivotX, pivotY, 0.0);
+                glRotatef(angleB, 0.0, 0.0, 1.0);
+                glTranslatef(-pivotX, -pivotY, 0.0);
+
+                drawJoint(20.0, 0.0, 15.0, 0, 255, 0, colorOffset);
+
+                // Antebraço
+                glPushMatrix();
+                {
+                    glTranslatef(5.0, -80.0, 0.0);
+                    drawForearm(120, 120, 120, colorOffset);
+                }
+                // Fim Antebraço
+                glPopMatrix();
+            }
+            // Fim Cotovelo
+            glPopMatrix();
+        }
+        // Fim Braço Superior
+        glPopMatrix();
+    }
+    // Fim Braço
     glPopMatrix();
 }
