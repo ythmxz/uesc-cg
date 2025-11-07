@@ -1,0 +1,113 @@
+Bota:
+
+A: glVertex2f(5.00, 60.00);
+B: glVertex2f(0.00, 70.00);
+C: glVertex2f(0.00, 80.00);
+D: glVertex2f(40.00, 80.00);
+E: glVertex2f(40.00, 70.00);
+F: glVertex2f(35.00, 60.00);
+
+A: glVertex2f(5.00, 0.00);
+B: glVertex2f(5.00, 60.00);
+C: glVertex2f(35.00, 60.00);
+D: glVertex2f(35.00, 25.00);
+E: glVertex2f(60.00, 25.00);
+F: glVertex2f(70.00, 20.00);
+G: glVertex2f(80.00, 10.00);
+H: glVertex2f(80.00, 0.00);
+
+Panturrilha:
+
+A: glVertex2f(5.00, 0.00);
+B: glVertex2f(0.00, 35.00);
+C: glVertex2f(0.00, 55.00);
+D: glVertex2f(2.00, 70.00);
+E: glVertex2f(5.00, 80.00);
+
+F: glVertex2f(35.00, 80.00);
+G: glVertex2f(38.00, 70.00);
+H: glVertex2f(40.00, 55.00);
+I: glVertex2f(40.00, 35.00);
+J: glVertex2f(35.00, 0.00);
+
+Coxa:
+
+A: glVertex2f(10.00, 0.00);
+B: glVertex2f(3.00, 35.00);
+C: glVertex2f(0.00, 55.00);
+D: glVertex2f(0.00, 70.00);
+E: glVertex2f(0.00, 80.00);
+
+F: glVertex2f(50.00, 80.00);
+G: glVertex2f(50.00, 70.00);
+H: glVertex2f(50.00, 55.00);
+I: glVertex2f(47.00, 35.00);
+J: glVertex2f(40.00, 0.00);
+
+Torso:
+
+A: glVertex2f(28.0, 0.0);
+B: glVertex2f(12.0, 8.0);
+C: glVertex2f(4.0, 20.0);
+
+D: glVertex2f(76.0, 20.0);
+E: glVertex2f(68.0, 8.0);
+F: glVertex2f(52.0, 0.0);
+
+A: glVertex2f(4.0, 20.0);
+B: glVertex2f(0.0, 32.0);
+C: glVertex2f(0.0, 40.0);
+D: glVertex2f(4.0, 52.0);
+
+E: glVertex2f(76.0, 52.0);
+F: glVertex2f(80.0, 40.0);
+G: glVertex2f(80.0, 32.0);
+H: glVertex2f(76.0, 20.0);
+
+A: glVertex2f(4.0, 52.0);
+B: glVertex2f(4.0, 80.0);
+C: glVertex2f(2.0, 100.0);
+D: glVertex2f(0.0, 120.0);
+E: glVertex2f(0.0, 140.0);
+F: glVertex2f(4.0, 150.0);
+G: glVertex2f(10.0, 160.0);
+
+H: glVertex2f(60.0, 160.0);
+I: glVertex2f(70.0, 150.0);
+J: glVertex2f(70.0, 78.0);
+K: glVertex2f(72.0, 68.0);
+L: glVertex2f(76.0, 52.0);
+
+A: glVertex2f(60.0, 160.0);
+B: glVertex2f(70.0, 150.0);
+C: glVertex2f(80.0, 140.0);
+D: glVertex2f(86.0, 130.0);
+E: glVertex2f(82.0, 120.0);
+F: glVertex2f(70.0, 112.0);
+
+Braço Superior:
+
+A: glVertex2f(5.0, 0.0);
+B: glVertex2f(0.0, 80.0);
+
+C: glVertex2f(35.0, 80.0);
+D: glVertex2f(40.0, 40.0);
+E: glVertex2f(35.0, 20.0);
+F: glVertex2f(30.0, 10.0);
+G: glVertex2f(30.0, 0.0);
+
+Antebraço:
+
+A: glVertex2f(5.0, 0.0);
+B: glVertex2f(0.0, 80.0);
+C: glVertex2f(30.0, 80.0);
+D: glVertex2f(25.0, 0.0);
+
+Mão:
+
+A: glVertex2f(0.0, 5.0);
+B: glVertex2f(5.0, 30.0);
+C: glVertex2f(25.0, 30.0);
+D: glVertex2f(25.0, 20.0);
+E: glVertex2f(30.0, 10.0);
+F: glVertex2f(30.0, 0.0);
