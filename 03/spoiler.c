@@ -262,7 +262,7 @@ void keyboard(unsigned char key, GLint x, GLint y) {
         neck = (neck <= 25.0) ? neck += 5.0 : neck;
         break;
 
-    case 'l':
+    case 'p':
         neck = (neck >= -25.0) ? neck -= 5.0 : neck;
         break;
 
