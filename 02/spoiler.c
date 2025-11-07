@@ -6,6 +6,10 @@
 int displayWidth = 0, displayHeight = 0;
 int windowWidth = 0, windowHeight = 0;
 
+// Posição, escala e ângulo do personagem
+
+GLfloat posX = 200.0, posY = 200.0, scale = 1.0, angle = 0.0;
+
 // Ângulos das articulações
 
 GLfloat neck = 0.0;
@@ -19,6 +23,7 @@ GLfloat hipR = 0.0, kneeR = 0.0, ankleR = 0.0;
 void display(void);
 void reshape(GLsizei width, GLsizei height);
 void keyboard(unsigned char key, GLint x, GLint y);
+void special(int key, GLint x, GLint y);
 
 // Articulação
 
@@ -47,7 +52,7 @@ void drawLeg(GLfloat x,
 void drawTorso(GLubyte r, GLubyte g, GLubyte b);
 void drawBelt(GLubyte r, GLubyte g, GLubyte b);
 void drawStrap(GLubyte r, GLubyte g, GLubyte b);
-void drawChest(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
+void drawBody(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
 
 // Braço
 
@@ -58,13 +63,13 @@ void drawArm(GLfloat x,
              GLfloat y,
              GLfloat angleA,
              GLfloat angleB,
-             /*GLfloat angleC,*/
+             GLfloat angleC,
              GLubyte r1,
              GLubyte g1,
              GLubyte b1,
-             /*GLubyte r2,
+             GLubyte r2,
              GLubyte g2,
-             GLubyte b2,*/
+             GLubyte b2,
              GLubyte colorOffset);
 
 // Cabeça
@@ -77,6 +82,9 @@ void drawHead(GLfloat x, GLfloat y, GLfloat angle, GLubyte r, GLubyte g, GLubyte
 // Acessório
 
 void drawCape(GLubyte r, GLubyte g, GLubyte b);
+
+// Personagem
+void drawSpoiler(GLfloat x, GLfloat y, GLfloat scale, GLfloat angle);
 
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
@@ -99,6 +107,7 @@ int main(int argc, char **argv) {
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc(keyboard);
+    glutSpecialFunc(special);
     glutMainLoop();
 
     return 0;
@@ -106,10 +115,7 @@ int main(int argc, char **argv) {
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT);
-    drawLeg(98.0, 200.0, hipL, kneeL, ankleL, 60, 40, 80, 60, 60, 60, -10);
-    drawChest(60.0, 260.0, 60, 40, 80);
-    drawLeg(52.0, 200.0, hipR, kneeR, ankleR, 60, 40, 80, 60, 60, 60, 10);
-    drawArm(60.0, 320.0, shoulderR, elbowR, 0, 40, 80, 0);
+    drawSpoiler(posX, posY, scale, angle);
     glutSwapBuffers();
 }
 
@@ -213,6 +219,80 @@ void keyboard(unsigned char key, GLint x, GLint y) {
 
     case 'g':
         elbowR = (elbowR >= 5.0) ? elbowR -= 5.0 : elbowR;
+        break;
+
+    case 'n':
+        wristR = (wristR <= 10.0) ? wristR += 5.0 : wristR;
+        break;
+
+    case 'b':
+        wristR = (wristR >= -5.0) ? wristR -= 5.0 : wristR;
+        break;
+
+        // Braço Esquerdo
+    case 'i':
+        shoulderL = (shoulderL <= 175.0) ? shoulderL += 5.0 : shoulderL;
+        break;
+
+    case 'u':
+        shoulderL = (shoulderL >= -55.0) ? shoulderL -= 5.0 : shoulderL;
+        break;
+
+    case 'k':
+        elbowL = (elbowL <= 145.0) ? elbowL += 5.0 : elbowL;
+        break;
+
+    case 'j':
+        elbowL = (elbowL >= 5.0) ? elbowL -= 5.0 : elbowL;
+        break;
+
+    case ',':
+        wristL = (wristL <= 10.0) ? wristL += 5.0 : wristL;
+        break;
+
+    case 'm':
+        wristL = (wristL >= -5.0) ? wristL -= 5.0 : wristL;
+        break;
+    }
+
+    glutPostRedisplay();
+}
+
+void special(int key, GLint x, GLint y) {
+    switch (key) {
+    // Posição
+    case GLUT_KEY_UP:
+        posY += 5.0;
+        break;
+
+    case GLUT_KEY_DOWN:
+        posY -= 5.0;
+        break;
+
+    case GLUT_KEY_LEFT:
+        posX -= 5.0;
+        break;
+
+    case GLUT_KEY_RIGHT:
+        posX += 5.0;
+        break;
+
+    // Escala
+    case GLUT_KEY_PAGE_UP:
+        scale += 0.1;
+        break;
+
+    case GLUT_KEY_PAGE_DOWN:
+        scale = (scale > 0.1) ? scale - 0.1 : scale;
+        break;
+
+    // Rotação
+    case GLUT_KEY_HOME:
+        angle += 5.0;
+        break;
+
+    case GLUT_KEY_END:
+        angle -= 5.0;
         break;
     }
 
@@ -440,7 +520,7 @@ void drawTorso(GLubyte r, GLubyte g, GLubyte b) {
     glEnd();
 }
 
-void drawChest(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
+void drawBody(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
     // Peitoral
     glPushMatrix();
     {
@@ -463,8 +543,11 @@ void drawUpperArm(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset) {
     {
         glVertex2f(5.0, 0.0);
         glVertex2f(0.0, 80.0);
-        glVertex2f(40.0, 80.0);
-        glVertex2f(35.0, 0.0);
+        glVertex2f(35.0, 80.0);
+        glVertex2f(40.0, 40.0);
+        glVertex2f(35.0, 20.0);
+        glVertex2f(30.0, 10.0);
+        glVertex2f(30.0, 0.0);
     }
     glEnd();
 }
@@ -482,17 +565,32 @@ void drawForearm(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset) {
     glEnd();
 }
 
+void drawHand(GLubyte r, GLubyte g, GLubyte b, GLubyte colorOffset) {
+    glColor3ub(r + colorOffset, g + colorOffset, b + colorOffset);
+
+    glBegin(GL_POLYGON);
+    {
+        glVertex2f(0.0, 5.0);
+        glVertex2f(5.0, 30.0);
+        glVertex2f(25.0, 30.0);
+        glVertex2f(25.0, 20.0);
+        glVertex2f(30.0, 10.0);
+        glVertex2f(30.0, 0.0);
+    }
+    glEnd();
+}
+
 void drawArm(GLfloat x,
              GLfloat y,
              GLfloat angleA,
              GLfloat angleB,
-             /*GLfloat angleC,*/
+             GLfloat angleC,
              GLubyte r1,
              GLubyte g1,
              GLubyte b1,
-             /*GLubyte r2,
+             GLubyte r2,
              GLubyte g2,
-             GLubyte b2,*/
+             GLubyte b2,
              GLubyte colorOffset) {
     GLfloat pivotX = 0.0, pivotY = 0.0;
 
@@ -510,8 +608,8 @@ void drawArm(GLfloat x,
             glRotatef(angleA, 0.0, 0.0, 1.0);
             glTranslatef(-pivotX, -pivotY, 0.0);
 
-            drawJoint(20.0, 80.0, 20.0, 255, 0, 0, colorOffset);
-            drawUpperArm(40, 40, 40, colorOffset);
+            drawJoint(20.0, 80.0, 20.0, r1, g1, b1, colorOffset);
+            drawUpperArm(r1, g1, b1, colorOffset);
 
             // Cotovelo
             glPushMatrix();
@@ -522,13 +620,36 @@ void drawArm(GLfloat x,
                 glRotatef(angleB, 0.0, 0.0, 1.0);
                 glTranslatef(-pivotX, -pivotY, 0.0);
 
-                drawJoint(20.0, 0.0, 15.0, 0, 255, 0, colorOffset);
+                drawJoint(20.0, 0.0, 15.0, r1, g1, b1, colorOffset);
 
                 // Antebraço
                 glPushMatrix();
                 {
                     glTranslatef(5.0, -80.0, 0.0);
-                    drawForearm(120, 120, 120, colorOffset);
+                    drawForearm(r1, g1, b1, colorOffset);
+
+                    // Pulso
+                    glPushMatrix();
+                    {
+                        pivotX = 15.0, pivotY = 0.0;
+
+                        glTranslatef(pivotX, pivotY, 0.0);
+                        glRotatef(angleC, 0.0, 0.0, 1.0);
+                        glTranslatef(-pivotX, -pivotY, 0.0);
+
+                        drawJoint(15.0, 0.0, 10.0, r1, g1, b1, colorOffset);
+
+                        // Mão
+                        glPushMatrix();
+                        {
+                            glTranslatef(0.0, -30.0, 0.0);
+                            drawHand(r2, g2, b2, colorOffset);
+                        }
+                        // Fim Mão
+                        glPopMatrix();
+                    }
+                    // Fim Pulso
+                    glPopMatrix();
                 }
                 // Fim Antebraço
                 glPopMatrix();
@@ -540,5 +661,25 @@ void drawArm(GLfloat x,
         glPopMatrix();
     }
     // Fim Braço
+    glPopMatrix();
+}
+
+void drawSpoiler(GLfloat x, GLfloat y, GLfloat scale, GLfloat angle) {
+    GLfloat pivotX = 55.5, pivotY = 80.0;
+
+    glPushMatrix();
+    {
+        glTranslatef(x, y, 0.0);
+        glTranslatef(pivotX, pivotY, 0.0);
+        glRotatef(angle, 0.0, 0.0, 1.0);
+        glScalef(scale, scale, 1.0);
+        glTranslatef(-pivotX, -pivotY, 0.0);
+
+        drawArm(48.0, 120.0, shoulderL, elbowL, wristL, 60, 40, 80, 60, 60, 60, -15);
+        drawLeg(46.0, 0.0, hipL, kneeL, ankleL, 60, 40, 80, 60, 60, 60, -10);
+        drawBody(8.0, 60.0, 60, 40, 80);
+        drawLeg(0.0, 0.0, hipR, kneeR, ankleR, 60, 40, 80, 60, 60, 60, 10);
+        drawArm(8.0, 120.0, shoulderR, elbowR, wristR, 60, 40, 80, 60, 60, 60, 15);
+    }
     glPopMatrix();
 }
