@@ -2,6 +2,8 @@
 
 #include <GL/glut.h>
 #include <math.h>
+#include <stdlib.h>
+#include <time.h>
 
 int displayWidth = 0, displayHeight = 0;
 int windowWidth = 0, windowHeight = 0;
@@ -21,6 +23,12 @@ GLfloat hipR = 0.0, kneeR = 0.0, ankleR = 0.0;
 // Variáveis para controlar a animação
 GLfloat animationTime = 0.0;
 GLboolean animating = GL_FALSE;
+GLfloat backgroundOffset = 0.0;
+GLfloat starBlinkTime = 0.0;
+
+// Posições das estrelas (geradas aleatoriamente uma vez)
+#define NUM_STARS 100
+GLfloat starPositions[NUM_STARS][2]; // [x, y]
 
 // Callbacks
 
@@ -29,6 +37,10 @@ void reshape(GLsizei width, GLsizei height);
 void timer(int value);
 void keyboard(unsigned char key, GLint x, GLint y);
 void special(int key, GLint x, GLint y);
+
+// Inicialização
+
+void initStars();
 
 // Articulação
 
@@ -110,6 +122,9 @@ int main(int argc, char **argv) {
 
     glClearColor(0.0, 0.0, 0.0, 1.0);
 
+    // Inicializa posições aleatórias das estrelas
+    initStars();
+
     // Callbacks
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
@@ -162,30 +177,36 @@ void reshape(GLsizei width, GLsizei height) {
 }
 
 void timer(int value) {
+    // Atualiza o tempo de piscar das estrelas (sempre, independente da animação)
+    starBlinkTime += 0.05;
+
     if (animating) {
+        angle = -10.0;
         animationTime += 0.15;
 
-        // Animação de caminhada - perna direita e esquerda alternadas
-        hipR = (30.0 * sin(animationTime)) + 5.0;
-        kneeR = -20.0 - 20.0 * cos(animationTime);
+        hipR = (45.0 * sin(animationTime)) + 20.0;
+        kneeR = -30.0 - 20.0 * cos(animationTime);
         ankleR = 0.0;
 
-        hipL = (30.0 * sin(animationTime + M_PI)) + 5.0; // Fora de fase
-        kneeL = -20.0 - 20.0 * cos((animationTime + M_PI));
+        hipL = (45.0 * sin(animationTime + M_PI)) + 20.0;
+        kneeL = -30.0 - 20.0 * cos((animationTime + M_PI));
         ankleL = 0.0;
 
-        // Adicionar movimento aos braços para naturalidade
-        // Ombros balançam em oposição às pernas
         shoulderR = 30.0 * sin(animationTime + M_PI);
         shoulderL = 30.0 * sin(animationTime);
 
-        // Cotovelos com mais movimento
-        elbowR = 120.0 + 10.0 * sin(animationTime); // Varia de 30° a 90°
+        elbowR = 120.0 + 10.0 * sin(animationTime);
         elbowL = 120.0 + 10.0 * sin(animationTime + M_PI);
 
-        glutPostRedisplay();
+        // Move o cenário para a esquerda
+        backgroundOffset -= 5.0;
+        // Reseta quando ultrapassar a largura da janela (loop infinito)
+        if (backgroundOffset <= -windowWidth) {
+            backgroundOffset = 0.0;
+        }
     }
 
+    glutPostRedisplay();
     glutTimerFunc(16, timer, 0);
 }
 
@@ -314,7 +335,22 @@ void keyboard(unsigned char key, GLint x, GLint y) {
     case ' ': // Barra de espaço
         animating = !animating;
         if (!animating) {
+            // Reseta todas as articulações para posição neutra
             animationTime = 0.0;
+            angle = 0.0;
+            neck = 0.0;
+            shoulderL = 0.0;
+            elbowL = 0.0;
+            wristL = 0.0;
+            shoulderR = 0.0;
+            elbowR = 0.0;
+            wristR = 0.0;
+            hipL = 0.0;
+            kneeL = 0.0;
+            ankleL = 0.0;
+            hipR = 0.0;
+            kneeR = 0.0;
+            ankleR = 0.0;
         }
         break;
     }
@@ -941,9 +977,84 @@ void drawCape(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
     glPopMatrix();
 }
 
-void drawBackground() {
-    glColor3ub(0, 40, 0);
+void initStars() {
+    // Inicializa posições aleatórias das estrelas (chamada uma vez no início)
+    srand(time(NULL));
+    for (int i = 0; i < NUM_STARS; i++) {
+        starPositions[i][0] = (GLfloat)(rand() % (int)windowWidth);
+        starPositions[i][1] = (windowHeight / 4.0) + (GLfloat)(rand() % (int)(windowHeight * 0.75));
+    }
+}
 
+void drawStars() {
+    // Habilita blending para transparência
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // Desenha estrelas (pontos brancos) em posições fixas com efeito de piscar
+    glPointSize(2.0);
+    glBegin(GL_POINTS);
+    {
+        for (int i = 0; i < NUM_STARS; i++) {
+            GLfloat x = starPositions[i][0];
+            GLfloat y = starPositions[i][1];
+
+            // Efeito de piscar: cada estrela tem sua própria fase baseada no índice
+            GLfloat blinkPhase = starBlinkTime + (i * 0.3);  // offset diferente para cada estrela
+            GLfloat opacity = (sin(blinkPhase) + 1.0) * 0.5; // varia entre 0.0 e 1.0
+
+            // Varia a opacidade entre 0.3 e 1.0 (nunca totalmente transparente)
+            GLfloat starOpacity = 0.3f + opacity * 0.7f;
+            glColor4f(1.0f, 1.0f, 1.0f, starOpacity);
+
+            glVertex2f(x, y);
+        }
+    }
+    glEnd();
+
+    // Desabilita blending
+    glDisable(GL_BLEND);
+}
+
+void drawBuilding(GLfloat x, GLfloat y, GLfloat width, GLfloat height) {
+    // Corpo do prédio (cinza escuro)
+    glColor3ub(30, 30, 40);
+    glBegin(GL_QUADS);
+    {
+        glVertex2f(x, y);
+        glVertex2f(x, y + height);
+        glVertex2f(x + width, y + height);
+        glVertex2f(x + width, y);
+    }
+    glEnd();
+
+    // Janelas acesas (amarelo claro)
+    glColor3ub(255, 255, 150);
+    GLfloat windowWidth = width / 8.0;
+    GLfloat windowHeight = height / 15.0;
+
+    for (int row = 1; row < 14; row++) {
+        for (int col = 1; col < 7; col++) {
+            // Acende janelas de forma pseudo-aleatória (padrão baseado em posição)
+            if ((row + col) % 3 != 0) {
+                GLfloat wx = x + col * (width / 7.0);
+                GLfloat wy = y + row * (height / 14.0);
+                glBegin(GL_QUADS);
+                {
+                    glVertex2f(wx, wy);
+                    glVertex2f(wx, wy + windowHeight);
+                    glVertex2f(wx + windowWidth, wy + windowHeight);
+                    glVertex2f(wx + windowWidth, wy);
+                }
+                glEnd();
+            }
+        }
+    }
+}
+
+void drawRooftop() {
+    // Telhado de prédio (cinza mais claro com detalhes)
+    glColor3ub(50, 50, 60);
     glBegin(GL_QUADS);
     {
         glVertex2f(0.0, 0.0);
@@ -953,8 +1064,69 @@ void drawBackground() {
     }
     glEnd();
 
-    glColor3ub(0, 0, 20);
+    // Batente superior (borda elevada no topo do telhado)
+    GLfloat edgeHeight = 15.0;
+    glColor3ub(60, 60, 70);
+    glBegin(GL_QUADS);
+    {
+        glVertex2f(0.0, windowHeight / 4.0);
+        glVertex2f(0.0, windowHeight / 4.0 + edgeHeight);
+        glVertex2f(windowWidth, windowHeight / 4.0 + edgeHeight);
+        glVertex2f(windowWidth, windowHeight / 4.0);
+    }
+    glEnd();
 
+    // Sombra do batente
+    glColor3ub(30, 30, 35);
+    glBegin(GL_QUADS);
+    {
+        glVertex2f(0.0, windowHeight / 4.0);
+        glVertex2f(0.0, windowHeight / 4.0 + 3.0);
+        glVertex2f(windowWidth, windowHeight / 4.0 + 3.0);
+        glVertex2f(windowWidth, windowHeight / 4.0);
+    }
+    glEnd();
+
+    // Detalhes do telhado - linhas de ventilação
+    glColor3ub(40, 40, 50);
+    glLineWidth(3.0);
+    for (int i = 1; i < 8; i++) {
+        glBegin(GL_LINES);
+        {
+            GLfloat lineY = (windowHeight / 4.0) * (i / 8.0);
+            glVertex2f(0.0, lineY);
+            glVertex2f(windowWidth, lineY);
+        }
+        glEnd();
+    }
+
+    // Pequenos blocos/estruturas no telhado
+    glColor3ub(35, 35, 45);
+    for (int i = 0; i < 5; i++) {
+        GLfloat blockX = (i + 1) * (windowWidth / 6.0);
+        GLfloat blockH = 20.0 + (i * 10.0);
+        glBegin(GL_QUADS);
+        {
+            glVertex2f(blockX, 0.0);
+            glVertex2f(blockX, blockH);
+            glVertex2f(blockX + 40.0, blockH);
+            glVertex2f(blockX + 40.0, 0.0);
+        }
+        glEnd();
+    }
+}
+
+void drawSkyline(GLfloat skylineY) {
+    // Desenha todos os prédios - função auxiliar para reutilizar
+    drawBuilding(0.0, skylineY, 130.0, 350.0);
+    drawBuilding(180.0, skylineY, 150.0, 300.0);
+    drawBuilding(380.0, skylineY, 130.0, 400.0);
+    drawBuilding(540.0, skylineY, 140.0, 250.0);
+}
+
+void drawBackground() {
+    // Céu noturno
+    glColor3ub(10, 10, 30);
     glBegin(GL_QUADS);
     {
         glVertex2f(0.0, windowHeight / 4.0);
@@ -964,8 +1136,28 @@ void drawBackground() {
     }
     glEnd();
 
+    // Lua (desenhada uma vez em posição fixa)
     drawJoint(windowWidth * 0.75, windowHeight * 0.75, 150.0, 255, 255, 235, 0);
-    drawJoint((windowWidth * 0.75) + 75.0, windowHeight * 0.75, 150.0, 0, 0, 20, 0);
+    drawJoint((windowWidth * 0.75) + 75.0, windowHeight * 0.75, 150.0, 10, 10, 30, 0);
+
+    // Estrelas (desenhadas uma vez, fixas)
+    drawStars();
+
+    // Desenha duas cópias do cenário (prédios e telhado) lado a lado para criar loop infinito
+    GLfloat skylineY = windowHeight / 8.0;
+    for (int i = 0; i < 2; i++) {
+        glPushMatrix();
+        {
+            glTranslatef(backgroundOffset + (i * windowWidth), 0.0, 0.0);
+
+            // Prédios ao fundo em diferentes alturas (mesmos em ambas as cópias)
+            drawSkyline(skylineY);
+
+            // Telhado do prédio (chão)
+            drawRooftop();
+        }
+        glPopMatrix();
+    }
 }
 
 void drawSpoiler(GLfloat x, GLfloat y, GLfloat scale, GLfloat angle) {
