@@ -30,6 +30,7 @@ GLfloat hipR = 0.0, kneeR = 0.0, ankleR = 0.0;
 GLfloat animationTime = 0.0;
 GLboolean animating = GL_TRUE;
 GLfloat backgroundOffset = 0.0;
+GLfloat moonOffset = 0.0;
 GLfloat starBlinkTime = 0.0;
 GLfloat breathingTime = 0.0;
 GLfloat capeSwayAngle = 0.0;
@@ -207,6 +208,7 @@ void timer(int value) {
         elbowL = 120.0 + 10.0 * sin(animationTime + M_PI);
 
         backgroundOffset -= 5.0;
+        moonOffset -= 0.1;
 
         // Loop
         if (backgroundOffset <= -windowWidth) {
@@ -1144,8 +1146,8 @@ void drawBackground() {
     }
     glEnd();
 
-    drawJoint(windowWidth * 0.75, windowHeight * 0.75, 150.0, 255, 255, 235, 0);
-    drawJoint((windowWidth * 0.75) + 75.0, windowHeight * 0.75, 150.0, 10, 10, 30, 0);
+    drawJoint(moonOffset + (windowWidth * 0.75), windowHeight * 0.75, 150.0, 255, 255, 235, 0);
+    drawJoint(moonOffset + ((windowWidth * 0.75) + 75.0), windowHeight * 0.75, 150.0, 10, 10, 30, 0);
 
     drawStars();
 
