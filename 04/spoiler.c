@@ -1,7 +1,12 @@
-#define _USE_MATH_DEFINES
-
 #include <GL/glut.h>
+
+#define _USE_MATH_DEFINES
 #include <math.h>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 #include <stdlib.h>
 #include <time.h>
 
@@ -10,7 +15,7 @@ int windowWidth = 0, windowHeight = 0;
 
 // Posição, escala e ângulo do personagem
 
-GLfloat posX = 405.0, posY = 405.0, scale = 1.5, angle = 0.0;
+GLfloat posX = 300.0, posY = 260.0, scale = 1.0, angle = 0.0;
 
 // Ângulos das articulações
 
@@ -20,13 +25,17 @@ GLfloat shoulderR = 0.0, elbowR = 0.0, wristR = 0.0;
 GLfloat hipL = 0.0, kneeL = 0.0, ankleL = 0.0;
 GLfloat hipR = 0.0, kneeR = 0.0, ankleR = 0.0;
 
-// Variáveis para controlar a animação
+// Animação
+
 GLfloat animationTime = 0.0;
-GLboolean animating = GL_FALSE;
+GLboolean animating = GL_TRUE;
 GLfloat backgroundOffset = 0.0;
 GLfloat starBlinkTime = 0.0;
+GLfloat breathingTime = 0.0;
+GLfloat capeSwayAngle = 0.0;
 
-// Posições das estrelas (geradas aleatoriamente uma vez)
+// Posição estrelas
+
 #define NUM_STARS 100
 GLfloat starPositions[NUM_STARS][2]; // [x, y]
 
@@ -38,7 +47,7 @@ void timer(int value);
 void keyboard(unsigned char key, GLint x, GLint y);
 void special(int key, GLint x, GLint y);
 
-// Inicialização
+// Inicialização estrelas
 
 void initStars();
 
@@ -98,7 +107,7 @@ void drawHead(GLfloat x, GLfloat y, GLfloat angle, GLubyte r, GLubyte g, GLubyte
 
 // Capa
 
-void drawCape(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b);
+void drawCape(GLfloat x, GLfloat y, GLfloat swayAngle, GLubyte r, GLubyte g, GLubyte b);
 
 // Completo
 
@@ -121,8 +130,6 @@ int main(int argc, char **argv) {
     glutCreateWindow("SPOILER");
 
     glClearColor(0.0, 0.0, 0.0, 1.0);
-
-    // Inicializa posições aleatórias das estrelas
     initStars();
 
     // Callbacks
@@ -177,8 +184,9 @@ void reshape(GLsizei width, GLsizei height) {
 }
 
 void timer(int value) {
-    // Atualiza o tempo de piscar das estrelas (sempre, independente da animação)
     starBlinkTime += 0.05;
+    breathingTime += 0.03;
+    capeSwayAngle = 3.0 * sin(breathingTime * 1.5);
 
     if (animating) {
         angle = -10.0;
@@ -198,9 +206,9 @@ void timer(int value) {
         elbowR = 120.0 + 10.0 * sin(animationTime);
         elbowL = 120.0 + 10.0 * sin(animationTime + M_PI);
 
-        // Move o cenário para a esquerda
         backgroundOffset -= 5.0;
-        // Reseta quando ultrapassar a largura da janela (loop infinito)
+
+        // Loop
         if (backgroundOffset <= -windowWidth) {
             backgroundOffset = 0.0;
         }
@@ -287,7 +295,7 @@ void keyboard(unsigned char key, GLint x, GLint y) {
         wristR = (wristR >= -5.0) ? wristR -= 5.0 : wristR;
         break;
 
-        // Braço Esquerdo
+    // Braço Esquerdo
     case 'i':
         shoulderL = (shoulderL <= 175.0) ? shoulderL += 5.0 : shoulderL;
         break;
@@ -322,8 +330,8 @@ void keyboard(unsigned char key, GLint x, GLint y) {
         break;
 
     // Restaurar
-    case 13:
-        posX = 405.0, posY = 405.0, scale = 1.5, angle = 0.0;
+    case 13: // Enter
+        posX = 300.0, posY = 260.0, scale = 1.0, angle = 0.0;
         neck = 0.0;
         shoulderL = 0.0, elbowL = 0.0, wristL = 0.0;
         shoulderR = 0.0, elbowR = 0.0, wristR = 0.0;
@@ -331,11 +339,10 @@ void keyboard(unsigned char key, GLint x, GLint y) {
         hipR = 0.0, kneeR = 0.0, ankleR = 0.0;
         break;
 
-    // Iniciar/Parar animação
-    case ' ': // Barra de espaço
+    // Animação
+    case ' ': // Espaço
         animating = !animating;
         if (!animating) {
-            // Reseta todas as articulações para posição neutra
             animationTime = 0.0;
             angle = 0.0;
             neck = 0.0;
@@ -948,12 +955,16 @@ void drawHead(GLfloat x, GLfloat y, GLfloat angle, GLubyte r, GLubyte g, GLubyte
     glPopMatrix();
 }
 
-void drawCape(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
+void drawCape(GLfloat x, GLfloat y, GLfloat swayAngle, GLubyte r, GLubyte g, GLubyte b) {
     glColor3ub(r, g, b);
 
     glPushMatrix();
     {
         glTranslatef(x, y, 0.0);
+
+        glTranslatef(180.0, 351.0, 0.0);
+        glRotatef(swayAngle, 0.0, 0.0, 1.0);
+        glTranslatef(-180.0, -351.0, 0.0);
 
         glBegin(GL_POLYGON);
         {
@@ -978,8 +989,8 @@ void drawCape(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b) {
 }
 
 void initStars() {
-    // Inicializa posições aleatórias das estrelas (chamada uma vez no início)
     srand(time(NULL));
+
     for (int i = 0; i < NUM_STARS; i++) {
         starPositions[i][0] = (GLfloat)(rand() % (int)windowWidth);
         starPositions[i][1] = (windowHeight / 4.0) + (GLfloat)(rand() % (int)(windowHeight * 0.75));
@@ -987,38 +998,33 @@ void initStars() {
 }
 
 void drawStars() {
-    // Habilita blending para transparência
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    // Desenha estrelas (pontos brancos) em posições fixas com efeito de piscar
-    glPointSize(2.0);
-    glBegin(GL_POINTS);
     {
-        for (int i = 0; i < NUM_STARS; i++) {
-            GLfloat x = starPositions[i][0];
-            GLfloat y = starPositions[i][1];
+        glPointSize(3.0);
 
-            // Efeito de piscar: cada estrela tem sua própria fase baseada no índice
-            GLfloat blinkPhase = starBlinkTime + (i * 0.3);  // offset diferente para cada estrela
-            GLfloat opacity = (sin(blinkPhase) + 1.0) * 0.5; // varia entre 0.0 e 1.0
+        glBegin(GL_POINTS);
+        {
+            for (int i = 0; i < NUM_STARS; i++) {
+                GLfloat x = starPositions[i][0];
+                GLfloat y = starPositions[i][1];
 
-            // Varia a opacidade entre 0.3 e 1.0 (nunca totalmente transparente)
-            GLfloat starOpacity = 0.3f + opacity * 0.7f;
-            glColor4f(1.0f, 1.0f, 1.0f, starOpacity);
+                GLfloat blinkPhase = starBlinkTime + (i * 0.3);
+                GLfloat opacity = (sin(blinkPhase) + 1.0) * 0.5;
+                GLfloat starOpacity = 0.3f + opacity * 0.7f;
 
-            glVertex2f(x, y);
+                glColor4f(1.0f, 1.0f, 1.0f, starOpacity);
+                glVertex2f(x, y);
+            }
         }
+        glEnd();
     }
-    glEnd();
-
-    // Desabilita blending
     glDisable(GL_BLEND);
 }
 
 void drawBuilding(GLfloat x, GLfloat y, GLfloat width, GLfloat height) {
-    // Corpo do prédio (cinza escuro)
     glColor3ub(30, 30, 40);
+
     glBegin(GL_QUADS);
     {
         glVertex2f(x, y);
@@ -1028,14 +1034,12 @@ void drawBuilding(GLfloat x, GLfloat y, GLfloat width, GLfloat height) {
     }
     glEnd();
 
-    // Janelas acesas (amarelo claro)
     glColor3ub(255, 255, 150);
     GLfloat windowWidth = width / 8.0;
     GLfloat windowHeight = height / 15.0;
 
     for (int row = 1; row < 14; row++) {
         for (int col = 1; col < 7; col++) {
-            // Acende janelas de forma pseudo-aleatória (padrão baseado em posição)
             if ((row + col) % 3 != 0) {
                 GLfloat wx = x + col * (width / 7.0);
                 GLfloat wy = y + row * (height / 14.0);
@@ -1053,58 +1057,59 @@ void drawBuilding(GLfloat x, GLfloat y, GLfloat width, GLfloat height) {
 }
 
 void drawRooftop() {
-    // Telhado de prédio (cinza mais claro com detalhes)
     glColor3ub(50, 50, 60);
+
     glBegin(GL_QUADS);
     {
         glVertex2f(0.0, 0.0);
-        glVertex2f(0.0, windowHeight / 4.0);
-        glVertex2f(windowWidth, windowHeight / 4.0);
+        glVertex2f(0.0, windowHeight / 6.0);
+        glVertex2f(windowWidth, windowHeight / 6.0);
         glVertex2f(windowWidth, 0.0);
     }
     glEnd();
 
-    // Batente superior (borda elevada no topo do telhado)
     GLfloat edgeHeight = 15.0;
     glColor3ub(60, 60, 70);
+
     glBegin(GL_QUADS);
     {
-        glVertex2f(0.0, windowHeight / 4.0);
-        glVertex2f(0.0, windowHeight / 4.0 + edgeHeight);
-        glVertex2f(windowWidth, windowHeight / 4.0 + edgeHeight);
-        glVertex2f(windowWidth, windowHeight / 4.0);
+        glVertex2f(0.0, windowHeight / 6.0);
+        glVertex2f(0.0, windowHeight / 6.0 + edgeHeight);
+        glVertex2f(windowWidth, windowHeight / 6.0 + edgeHeight);
+        glVertex2f(windowWidth, windowHeight / 6.0);
     }
     glEnd();
 
-    // Sombra do batente
     glColor3ub(30, 30, 35);
+
     glBegin(GL_QUADS);
     {
-        glVertex2f(0.0, windowHeight / 4.0);
-        glVertex2f(0.0, windowHeight / 4.0 + 3.0);
-        glVertex2f(windowWidth, windowHeight / 4.0 + 3.0);
-        glVertex2f(windowWidth, windowHeight / 4.0);
+        glVertex2f(0.0, windowHeight / 6.0);
+        glVertex2f(0.0, windowHeight / 6.0 + 3.0);
+        glVertex2f(windowWidth, windowHeight / 6.0 + 3.0);
+        glVertex2f(windowWidth, windowHeight / 6.0);
     }
     glEnd();
 
-    // Detalhes do telhado - linhas de ventilação
     glColor3ub(40, 40, 50);
     glLineWidth(3.0);
+
     for (int i = 1; i < 8; i++) {
         glBegin(GL_LINES);
         {
-            GLfloat lineY = (windowHeight / 4.0) * (i / 8.0);
+            GLfloat lineY = (windowHeight / 6.0) * (i / 8.0);
             glVertex2f(0.0, lineY);
             glVertex2f(windowWidth, lineY);
         }
         glEnd();
     }
 
-    // Pequenos blocos/estruturas no telhado
     glColor3ub(35, 35, 45);
+
     for (int i = 0; i < 5; i++) {
         GLfloat blockX = (i + 1) * (windowWidth / 6.0);
         GLfloat blockH = 20.0 + (i * 10.0);
+
         glBegin(GL_QUADS);
         {
             glVertex2f(blockX, 0.0);
@@ -1117,43 +1122,39 @@ void drawRooftop() {
 }
 
 void drawSkyline(GLfloat skylineY) {
-    // Desenha todos os prédios - função auxiliar para reutilizar
-    drawBuilding(0.0, skylineY, 130.0, 350.0);
-    drawBuilding(180.0, skylineY, 150.0, 300.0);
-    drawBuilding(380.0, skylineY, 130.0, 400.0);
-    drawBuilding(540.0, skylineY, 140.0, 250.0);
+    glPushMatrix();
+    {
+        glScalef(2.0, 2.0, 1.0);
+        drawBuilding(0.0, skylineY, 150.0, 400.0);
+        drawBuilding(200.0, skylineY, 150.0, 250.0);
+        drawBuilding(400.0, skylineY, 150.0, 325.0);
+    }
+    glPopMatrix();
 }
 
 void drawBackground() {
-    // Céu noturno
     glColor3ub(10, 10, 30);
+
     glBegin(GL_QUADS);
     {
-        glVertex2f(0.0, windowHeight / 4.0);
+        glVertex2f(0.0, windowHeight / 6.0);
         glVertex2f(0.0, windowHeight);
         glVertex2f(windowWidth, windowHeight);
-        glVertex2f(windowWidth, windowHeight / 4.0);
+        glVertex2f(windowWidth, windowHeight / 6.0);
     }
     glEnd();
 
-    // Lua (desenhada uma vez em posição fixa)
     drawJoint(windowWidth * 0.75, windowHeight * 0.75, 150.0, 255, 255, 235, 0);
     drawJoint((windowWidth * 0.75) + 75.0, windowHeight * 0.75, 150.0, 10, 10, 30, 0);
 
-    // Estrelas (desenhadas uma vez, fixas)
     drawStars();
 
-    // Desenha duas cópias do cenário (prédios e telhado) lado a lado para criar loop infinito
-    GLfloat skylineY = windowHeight / 8.0;
+    GLfloat skylineY = 0.0;
     for (int i = 0; i < 2; i++) {
         glPushMatrix();
         {
             glTranslatef(backgroundOffset + (i * windowWidth), 0.0, 0.0);
-
-            // Prédios ao fundo em diferentes alturas (mesmos em ambas as cópias)
             drawSkyline(skylineY);
-
-            // Telhado do prédio (chão)
             drawRooftop();
         }
         glPopMatrix();
@@ -1162,17 +1163,18 @@ void drawBackground() {
 
 void drawSpoiler(GLfloat x, GLfloat y, GLfloat scale, GLfloat angle) {
     GLfloat pivotX = 55.5, pivotY = 80.0;
+    GLfloat breathingScale = 1.0 + (0.01 * sin(breathingTime));
 
     glPushMatrix();
     {
         glTranslatef(x, y, 0.0);
         glTranslatef(pivotX, pivotY, 0.0);
         glRotatef(angle, 0.0, 0.0, 1.0);
-        glScalef(scale, scale, 1.0);
+        glScalef(scale * breathingScale, scale * breathingScale, 1.0);
         glTranslatef(-pivotX, -pivotY, 0.0);
 
         drawArm(48.0, 120.0, shoulderL, elbowL, wristL, 60, 40, 80, 60, 60, 60, -15);
-        drawCape(-160.0, -140.0, 40, 20, 60);
+        drawCape(-160.0, -140.0, capeSwayAngle, 40, 20, 60);
         drawLeg(46.0, 0.0, hipL, kneeL, ankleL, 60, 40, 80, 60, 60, 60, -10);
         drawBody(8.0, 60.0, 60, 40, 80, 60, 60, 60);
         drawHead(20.0, 160.0, neck, 60, 40, 80);
